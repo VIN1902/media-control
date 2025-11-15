@@ -1,16 +1,13 @@
 import serial, time, pyautogui, statistics, sys
 
-# ---------------- user settings ----------------
 PORT = "/dev/ttyUSB0"
 BAUD = 115200
 
-# distance thresholds (tune these to taste)
 PAUSE_MAX = 15      # ≤ 15 cm  -> play/pause
 VOL_UP_MAX = 35     # 15–35 cm -> volume up
 # > 35 cm -> volume down
 SMOOTH_WINDOW = 5   # number of samples for smoothing
 COOLDOWN_SEC = 1.0  # time between actions
-# ------------------------------------------------
 
 def median_filter(buf, new):
     buf.append(new)
@@ -43,7 +40,6 @@ def main():
             smooth = median_filter(smooth_buf, dist)
             now = time.time()
 
-            # decide which zone the hand is in
             if smooth <= PAUSE_MAX:
                 state = "pause"
             elif smooth <= VOL_UP_MAX:
@@ -53,9 +49,8 @@ def main():
 
             print(f"\rDistance:{smooth:5.1f} cm  Zone:{state:>5}", end="")
 
-            # only trigger on state change + cooldown
             if state != last_state and now - last_action_time >= COOLDOWN_SEC:
-                print("")  # newline for log
+                print("")
                 if state == "pause":
                     print("Action: PLAY/PAUSE")
                     pyautogui.press("space")

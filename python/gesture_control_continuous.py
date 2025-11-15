@@ -45,14 +45,12 @@ def main():
             smooth = median_filter(smooth_buf, dist)
             now = time.time()
 
-            # Play/Pause trigger (hold near)
             if smooth <= NEAR_PAUSE and now - last_pause_time > COOLDOWN_PAUSE:
                 print(f"\nPlay/Pause triggered (dist={smooth:.1f}cm)")
                 pyautogui.press("space")
                 last_pause_time = now
-                continue  # skip volume handling this loop
+                continue
 
-            # Volume control based on distance change
             if last_dist is not None and now - last_vol_time > STEP_DELAY:
                 delta = smooth - last_dist
 
